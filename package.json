@@ -1,0 +1,57 @@
+{
+  "name": "@xr-utilities/h-seal-provider",
+  "version": "0.1.0",
+  "description": "Drop-in client for signing and anchoring H-Seal execution receipts. Lets an MCP server or any HTTP service co-sign the receipts it serves and anchor them to Hedera Consensus Service.",
+  "license": "MIT",
+  "author": "XR-Utilities <xr-utilities@proton.me>",
+  "homepage": "https://h-seal.xr-utilities.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XR-Utilities/h-seal-provider.git"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "@stellar/stellar-sdk": "^15.1.0",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "hedera",
+    "hcs",
+    "h-seal",
+    "receipt",
+    "attestation",
+    "mcp",
+    "x402",
+    "agent"
+  ]
+}
