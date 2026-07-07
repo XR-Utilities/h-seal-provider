@@ -1,6 +1,6 @@
 {
   "name": "@xr-utilities/h-seal-provider",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Drop-in client for signing and anchoring H-Seal execution receipts. Lets an MCP server or any HTTP service co-sign the receipts it serves and anchor them to Hedera Consensus Service.",
   "license": "MIT",
   "author": "XR-Utilities <xr-utilities@proton.me>",
@@ -53,5 +53,8 @@
     "mcp",
     "x402",
     "agent"
-  ]
+  ],
+  "bin": {
+    "hseal-sidecar": "dist/sidecar.js"
+  }
 }

@@ -39,6 +39,50 @@ The package is also published to GitHub Packages as `@xr-utilities/h-seal-provid
 `@xr-utilities:registry=https://npm.pkg.github.com` entry in `.npmrc` and a
 `read:packages` token. Use the public git install above when you want no token.
 
+## Signing sidecar (for non-Node services)
+
+If your service is not Node/TypeScript (a Python/FastAPI backend, say), run the SDK
+as a tiny HTTP signing sidecar and call it. It ships as a `bin` of this package,
+written with Node built-ins only (no extra dependencies), so a consumer runs it in
+one command, no clone, no Docker, no token:
+
+```
+npx -p github:XR-Utilities/h-seal-provider hseal-sidecar
+```
+
+Configure the provider via env (never commit the key):
+
+```
+PROVIDER_IDENTITY=xrpl:0:r...        # a CAIP-10 you control (XRPL must be ed25519)
+PROVIDER_KEY_RAW=<32-byte ed25519 seed hex>   # or an EVM key with PROVIDER_KEY_TYPE=evm
+HSEAL_NETWORK=mainnet
+SIDECAR_AUTH_TOKEN=<optional bearer>          # required unless bound to localhost/private
+HOST=0.0.0.0                                  # 127.0.0.1 to keep it local-only
+PORT=8791
+```
+
+Endpoints:
+
+- `GET /health` -> `{ status, configured, network, authRequired }`
+- `POST /attest` `{ request, response }` -> the provider attestation (attach it to the
+  receipt the caller anchors). Proves the backend that answered co-signed its own output.
+- `POST /sign-receipt` `{ receipt }` -> a signed receipt body (the caller anchors it).
+
+Call it from Python:
+
+```python
+import httpx
+r = httpx.post("http://localhost:8791/attest",
+               json={"request": req, "response": resp},
+               headers={"Authorization": f"Bearer {TOKEN}"}, timeout=5.0)
+attestation = r.json()   # attach to the receipt you anchor
+```
+
+When `SIDECAR_AUTH_TOKEN` is set, `/attest` and `/sign-receipt` require
+`Authorization: Bearer <token>`. For an `xrpl:0:r...` identity the account MUST be
+ed25519 (the server derives the r-address from the 0xED ed25519 pubkey), or use a
+`hedera:mainnet:0.0.x` ed25519 key.
+
 ## Provider co-signing (the two-line integration)
 
 You run an MCP server. After producing a response, co-sign the request/response
