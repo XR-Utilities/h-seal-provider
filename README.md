@@ -42,13 +42,33 @@ The package is also published to GitHub Packages as `@xr-utilities/h-seal-provid
 ## Signing sidecar (for non-Node services)
 
 If your service is not Node/TypeScript (a Python/FastAPI backend, say), run the SDK
-as a tiny HTTP signing sidecar and call it. It ships as a `bin` of this package,
-written with Node built-ins only (no extra dependencies), so a consumer runs it in
-one command, no clone, no Docker, no token:
+as a tiny HTTP signing sidecar. It ships as a `bin` of this package, written with Node
+built-ins only (no extra dependencies), so a consumer runs it in one command, no
+clone, no Docker, no token:
 
 ```
 npx -p github:XR-Utilities/h-seal-provider hseal-sidecar
 ```
+
+### Turnkey: proxy mode (zero code in your service)
+
+Set `PROXY_TARGET` to your service's base URL and route your traffic through the
+sidecar. Every response is co-signed by your identity automatically, with **no change
+to your service code** (any language):
+
+```
+PROXY_TARGET=http://127.0.0.1:8080   # your service; the sidecar sits in front of it
+```
+
+The signed response carries the attestation two ways, so any caller can read it:
+- header `x-hseal-attestation` (base64 JSON), and
+- for a JSON object response, a `_hSeal` field merged into the body.
+
+For request/response JSON APIs; streaming/SSE responses pass through unsigned. If the
+provider is unset or the target errors, the sidecar proxies transparently, so putting
+it in front of a service never breaks the service.
+
+### Endpoint mode (call it explicitly)
 
 Configure the provider via env (never commit the key):
 
