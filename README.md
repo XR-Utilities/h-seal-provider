@@ -1,6 +1,6 @@
 # @xr-utilities/h-seal-provider
 
-Drop-in client for signing and anchoring [H-Seal](https://h-seal.xr-utilities.com)
+Drop-in client for signing and anchoring [H-Seal](https://h-seal.xr-utilities.ai)
 execution receipts. It lets an MCP server, or any HTTP service, co-sign the
 receipts it serves and anchor them to Hedera Consensus Service.
 
@@ -137,7 +137,7 @@ const signed = await signReceipt({
 
 const body = attachAttestation(signed.body, attestation); // optional provider co-sig
 
-const client = new HSealClient({ endpoint: "https://h-seal.xr-utilities.com" });
+const client = new HSealClient({ endpoint: "https://h-seal.xr-utilities.ai" });
 const res = await client.anchor(body, { xPayment }); // xPayment from your x402 flow
 // 201 -> { id, consensusTimestamp, paymentTxId, signatureScheme }
 // 402 -> res.body carries the payment requirements to satisfy and retry
